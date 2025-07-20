@@ -27,7 +27,27 @@ This is a modern, animated, and sound-enhanced version of the classic **Rock Pap
 1. Clone or download the repository.
 2. Open `enhanced_rps_game.html` in any modern web browser.
 
-```bash
-git clone https://github.com/your-username/enhanced-rps-game.git
-cd enhanced-rps-game
-start enhanced_rps_game.html  # or open manually in browser
+## 🛠️ Built With
+HTML5
+
+CSS3 – Gradients, shadows, keyframe animations
+
+JavaScript (Vanilla) – DOM manipulation, audio API, game logic
+
+## 📌 Future Improvements
+Add mobile vibration feedback
+
+Improve accessibility (e.g., ARIA labels)
+
+Add localStorage to save scores across sessions
+
+Sound volume control and mute
+
+Theming options (light/dark mode)
+
+## 🙌 Credits
+Created by Rahmat, Matin, and Abubakr
+Design, logic, and styling handcrafted from scratch 🎨
+
+## 📎 License
+This project is open-source and free to use for learning and demonstration purposes.
