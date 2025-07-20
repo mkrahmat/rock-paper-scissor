@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Rock Paper Scissors</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+            max-width: 600px;
+            width: 95vw;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .title-text {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title-emoji {
+            font-size: 1.2em;
+        }
+
+        .players-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .player-section {
+            flex: 1;
+            text-align: center;
+        }
+
+        .vs-section {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 0 20px;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hand-display {
+            font-size: 3.5em;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .hand-display.shake {
+            animation: shake 0.6s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .hand-display.reveal {
+            animation: reveal 0.5s ease-out;
+        }
+
+        @keyframes reveal {
+            0% { transform: scale(0.5) rotate(180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .player-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+
+        .choice-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .choice-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            font-size: 1.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .choice-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .choice-btn.rock {
+            background: linear-gradient(45deg, #8B4513, #A0522D);
+        }
+
+        .choice-btn.paper {
+            background: linear-gradient(45deg, #4682B4, #5F9EA0);
+        }
+
+        .choice-btn.scissors {
+            background: linear-gradient(45deg, #C0C0C0, #A9A9A9);
+        }
+
+        .result-section {
+            margin: 15px 0;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-text {
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .result-text.win {
+            background: linear-gradient(45deg, #00C851, #007E33);
+            animation: celebrate 0.6s ease-in-out;
+        }
+
+        .result-text.lose {
+            background: linear-gradient(45deg, #ff4444, #CC0000);
+            animation: shake 0.6s ease-in-out;
+        }
+
+        .result-text.draw {
+            background: linear-gradient(45deg, #ffbb33, #FF8800);
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .score-section {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .control-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .credits {
+            margin-top: 15px;
+            font-size: 0.8em;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .countdown {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #FFD700;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 600px) {
+            .players-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .vs-section {
+                order: -1;
+                margin: 10px 0;
+            }
+            
+            .choice-buttons {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>
+            <span class="title-emoji">🎯</span>
+            <span class="title-text">Rock Paper Scissors</span>
+            <span class="title-emoji">🎯</span>
+        </h1>
+        
+        <div class="players-container">
+            <div class="player-section">
+                <div class="player-name">You</div>
+                <div class="hand-display" id="playerHand">🤔</div>
+            </div>
+            
+            <div class="vs-section">VS</div>
+            
+            <div class="player-section">
+                <div class="player-name">Computer</div>
+                <div class="hand-display" id="computerHand">🤔</div>
+            </div>
+        </div>
+
+        <div class="countdown" id="countdown" style="display: none;"></div>
+
+        <div class="choice-buttons">
+            <button class="choice-btn rock" onclick="playGame(1)" title="Rock">🪨</button>
+            <button class="choice-btn paper" onclick="playGame(2)" title="Paper">📋</button>
+            <button class="choice-btn scissors" onclick="playGame(3)" title="Scissors">✂️</button>
+        </div>
+
+        <div class="result-section">
+            <div class="result-text" id="result">Choose your weapon!</div>
+        </div>
+
+        <div class="score-section">
+            <div class="score-item">
+                <div class="score-value" id="wins">0</div>
+                <div>Wins</div>
+            </div>
+            <div class="score-item">
+                <div class="score-value" id="draws">0</div>
+                <div>Draws</div>
+            </div>
+            <div class="score-item">
+                <div class="score-value" id="losses">0</div>
+                <div>Losses</div>
+            </div>
+        </div>
+
+        <div class="control-buttons">
+            <button class="control-btn" onclick="resetGame()">🔄 Reset Game</button>
+            <button class="control-btn" onclick="toggleSound()">🔊 Sound: <span id="soundStatus">ON</span></button>
+        </div>
+
+        <div class="credits">
+            Enhanced Rock Paper Scissors by Rahmat, Matin, Abubakr
+        </div>
+    </div>
+
+    <script>
+        let wins = 0;
+        let losses = 0;
+        let draws = 0;
+        let soundEnabled = true;
+        let gameInProgress = false;
+
+        const choices = {
+            1: { name: "Rock", emoji: "🪨", beats: 3 },
+            2: { name: "Paper", emoji: "📋", beats: 1 },
+            3: { name: "Scissors", emoji: "✂️", beats: 2 }
+        };
+
+        const sounds = {
+            win: () => playTone(523.25, 200, 'sine'),  // C5
+            lose: () => playTone(196.00, 300, 'sawtooth'),  // G3
+            draw: () => playTone(349.23, 200, 'triangle'),  // F4
+            click: () => playTone(440, 100, 'square')  // A4
+        };
+
+        function playTone(frequency, duration, type = 'sine') {
+            if (!soundEnabled) return;
+            
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration / 1000);
+        }
+
+        function playGame(userChoice) {
+            if (gameInProgress) return;
+            
+            gameInProgress = true;
+            sounds.click();
+            
+            // Disable buttons during animation
+            const buttons = document.querySelectorAll('.choice-btn');
+            buttons.forEach(btn => btn.style.pointerEvents = 'none');
+            
+            // Start countdown animation
+            startCountdown(() => {
+                const computerChoice = Math.floor(Math.random() * 3) + 1;
+                
+                // Show choices with animation
+                showChoices(userChoice, computerChoice);
+                
+                // Determine winner
+                setTimeout(() => {
+                    const result = determineWinner(userChoice, computerChoice);
+                    displayResult(result, userChoice, computerChoice);
+                    updateScore(result);
+                    
+                    // Re-enable buttons
+                    setTimeout(() => {
+                        buttons.forEach(btn => btn.style.pointerEvents = 'auto');
+                        gameInProgress = false;
+                    }, 1000);
+                }, 500);
+            });
+        }
+
+        function startCountdown(callback) {
+            const countdownEl = document.getElementById('countdown');
+            const playerHand = document.getElementById('playerHand');
+            const computerHand = document.getElementById('computerHand');
+            
+            countdownEl.style.display = 'block';
+            playerHand.textContent = '🤜';
+            computerHand.textContent = '🤛';
+            
+            let count = 3;
+            countdownEl.textContent = count;
+            
+            // Add shake animation to hands
+            playerHand.classList.add('shake');
+            computerHand.classList.add('shake');
+            
+            const countInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownEl.textContent = count;
+                } else {
+                    countdownEl.textContent = 'GO!';
+                    clearInterval(countInterval);
+                    
+                    setTimeout(() => {
+                        countdownEl.style.display = 'none';
+                        playerHand.classList.remove('shake');
+                        computerHand.classList.remove('shake');
+                        callback();
+                    }, 300);
+                }
+            }, 600);
+        }
+
+        function showChoices(userChoice, computerChoice) {
+            const playerHand = document.getElementById('playerHand');
+            const computerHand = document.getElementById('computerHand');
+            
+            playerHand.textContent = choices[userChoice].emoji;
+            computerHand.textContent = choices[computerChoice].emoji;
+            
+            playerHand.classList.add('reveal');
+            computerHand.classList.add('reveal');
+            
+            setTimeout(() => {
+                playerHand.classList.remove('reveal');
+                computerHand.classList.remove('reveal');
+            }, 500);
+        }
+
+        function determineWinner(userChoice, computerChoice) {
+            if (userChoice === computerChoice) {
+                return 'draw';
+            } else if (choices[userChoice].beats === computerChoice) {
+                return 'win';
+            } else {
+                return 'lose';
+            }
+        }
+
+        function displayResult(result, userChoice, computerChoice) {
+            const resultEl = document.getElementById('result');
+            const userChoiceName = choices[userChoice].name;
+            const computerChoiceName = choices[computerChoice].name;
+            
+            resultEl.className = 'result-text ' + result;
+            
+            switch(result) {
+                case 'win':
+                    resultEl.textContent = `🎉 You Win! ${userChoiceName} beats ${computerChoiceName}`;
+                    sounds.win();
+                    break;
+                case 'lose':
+                    resultEl.textContent = `😔 You Lose! ${computerChoiceName} beats ${userChoiceName}`;
+                    sounds.lose();
+                    break;
+                case 'draw':
+                    resultEl.textContent = `🤝 It's a Draw! Both chose ${userChoiceName}`;
+                    sounds.draw();
+                    break;
+            }
+        }
+
+        function updateScore(result) {
+            switch(result) {
+                case 'win':
+                    wins++;
+                    document.getElementById('wins').textContent = wins;
+                    break;
+                case 'lose':
+                    losses++;
+                    document.getElementById('losses').textContent = losses;
+                    break;
+                case 'draw':
+                    draws++;
+                    document.getElementById('draws').textContent = draws;
+                    break;
+            }
+        }
+
+        function resetGame() {
+            wins = 0;
+            losses = 0;
+            draws = 0;
+            
+            document.getElementById('wins').textContent = '0';
+            document.getElementById('losses').textContent = '0';
+            document.getElementById('draws').textContent = '0';
+            document.getElementById('result').textContent = 'Choose your weapon!';
+            document.getElementById('result').className = 'result-text';
+            document.getElementById('playerHand').textContent = '🤔';
+            document.getElementById('computerHand').textContent = '🤔';
+            
+            sounds.click();
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundStatus').textContent = soundEnabled ? 'ON' : 'OFF';
+            sounds.click();
+        }
+
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add keyboard support
+            document.addEventListener('keydown', (e) => {
+                if (gameInProgress) return;
+                
+                switch(e.key.toLowerCase()) {
+                    case 'r':
+                    case '1':
+                        playGame(1);
+                        break;
+                    case 'p':
+                    case '2':
+                        playGame(2);
+                        break;
+                    case 's':
+                    case '3':
+                        playGame(3);
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        resetGame();
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
